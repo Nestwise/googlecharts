@@ -723,7 +723,12 @@ class Gchart
       delimiter = '&amp;'
     end
 
-    jstize(query_params.join(delimiter))
+    query_string = jstize(query_params.join(delimiter))
+
+    # Add custom params outside of the jstize operation
+    query_string << "#{delimiter if query_string.present?}#{custom}" if custom.present?
+    # Commas must be escaped by a `\` normally; but when used in a chem= param they must be escaped by an `@` sign.
+    query_string.gsub('%2C', '\%2C').gsub('@\%2C', '@%2C')
   end
 
 end
